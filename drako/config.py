@@ -36,11 +36,12 @@ class Accounting(object):
     """Accounting rules
     """
     def __init__(self, **kwargs):
-        freeze_interval = kwargs.get('freeze_interval', "M")
-        rollover = kwargs.get('rollover', "0 D")
-        loss_cutoff = kwargs.get('loss_cutoff', "1 Y")
-        anonymization_cutoff = kwargs.get('anonymization_cutoff', "1 Y")
-        purge_cutoff = kwargs.get('purge_cutoff', "10 Y")
+        freeze_interval = time.delta(kwargs.get('freeze_interval', "M"))
+        rollover = time.delta(kwargs.get('rollover'))
+        loss_cutoff = time.delta(kwargs.get('loss_cutoff', "1Y"))
+        anonymization_cutoff = time.delta(
+            kwargs.get('anonymization_cutoff', "1Y"))
+        purge_cutoff = time.delta(kwargs.get('purge_cutoff', "10Y"))
 
     def validate(self):
         assert self.loss_cutoff <= self.anonymization_cutoff
