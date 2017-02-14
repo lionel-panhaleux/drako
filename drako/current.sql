@@ -19,8 +19,8 @@ when doing date/time arithmetic across DST boundaries."
 
 ------------------------------------ TYPES ------------------------------------
 create type price as (
-  base_amount integer not null,
-  taxes integer[] not null default '{}'::integer[]
+  base_amount integer,
+  taxes integer[]
   );
 
 create type invoice_reference as (
@@ -61,6 +61,13 @@ create table customer_account (
   contact jsonb not null unique default '{}'::jsonb
   );
 
+create table document (
+  uid uuid primary key default gen_random_uuid(),
+  external_reference text,
+  backend text not null default '',
+  path jsonb not null default '{}'::jsonb
+  );
+
 create table payment_mode (
   uid uuid primary key default gen_random_uuid(),
   customer uuid not null references customer_account,
@@ -78,14 +85,7 @@ create table pricing (
   details jsonb not null unique default '{}'::jsonb,  -- details for invoicing
   quantity integer not null,
   amount price,
-  range tsrange not null default '[utcnow, utcnow]'::tsrange
-  );
-
-create table document (
-  uid uuid primary key default gen_random_uuid(),
-  external_reference text,
-  backend text not null default '',
-  path jsonb not null default '{}'::jsonb
+  range tsrange not null
   );
 
 create table invoice (
@@ -124,7 +124,7 @@ create table cashflow (
   amount integer,
   document uuid references document,
   proof jsonb not null default '{}'::jsonb,
-  parent uuid references payment
+  parent uuid references cashflow
   );
 
 create table payment (
