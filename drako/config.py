@@ -1,8 +1,6 @@
-import arrow
 import collections
-import datetime
 
-from . import period
+from . import time
 
 Tax = collections.namedtuple('Tax', ['name', 'base_points'])
 UnitPrice = collections.namedtuple(
@@ -21,10 +19,10 @@ class Item(object):
         self.unit = kwargs.get('unit', '')
         self.min_units = kwargs.get('min_quantity', 1)
         self.unit_price = UnitPrice(kwargs.get('unit_price', [1, 1, 0]))
-        self.recurring = kwargs.get('recurring', datetime.timedelta())
-        self.aggregate = kwargs.get('aggregate', datetime.timedelta())
-        self.slide = kwargs.get('slide', datetime.timedelta())
-        self.interval = kwargs.get('interval', datetime.timedelta())
+        self.recurring = time.delta(kwargs.get('recurring'))
+        self.aggregate = time.delta(kwargs.get('aggregate'))
+        self.slide = time.delta(kwargs.get('slide'))
+        self.interval = time.delta(kwargs.get('interval'))
         self.single_line = kwargs.get('single_line', '{label}')
         self.grouped_line = kwargs.get('grouped_line', '{count} {label}')
         self.refund_line = kwargs.get('refund_line', '{label}')
